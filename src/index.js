@@ -1,12 +1,29 @@
 import dotenv from "dotenv";
 import Connection from "./db/Connect.js";
+import app from "./app.js";
+
 // import mongoose from "mongoose";
 
+
+/* Below is the code to config the env file so that we can use import syntax */
 dotenv.config({
     path : "./.env"
 })
 
-Connection();
+
+
+Connection().then(()=>{
+    app.listen(process.env.PORT || 8000 , ()=> {
+        console.log(`Server is running on Port ${process.env.PORT || 8000}`)
+    })
+}).catch((error)=> {
+    console.log("Error in Connection is " , error)
+});
+
+
+
+
+
 /*
 different approch to connect mongodb
 (async () => {
