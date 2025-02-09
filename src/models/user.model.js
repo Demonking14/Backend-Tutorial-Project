@@ -49,19 +49,25 @@ const UserSchema = new Schema({
         type: String
     }
 }, { timestamps: true });
-
+/* This pre methond will work as soon as user saves anything in our website 
+pre method is used taki save hone se phle hum ye cheez krna cahate h 
+niceh wale function me hum user ke password ko encrypt kr rhe h taki database leak ho to direct password na leak ho jaye  , or iske liye humne use kiya h bcrypt middleware */
 UserSchema.pre("save", async function (next) {
     if (!this.isModified("password")) return next();
     this.password = await bcrypt.hash(this.password, 10)
     next()
 
 })
-
+/* below method check if the password is correct or not 
+isme bcrypt isiliye hue kiya h taki check kr ske ki encrypted password whi h ki nhi jo user ne dala h */
 UserSchema.methods.isPasswordCorrect = async function (password) {
     return await bcrypt.compare(password, this.password)
 
 
 }
+
+/* below we used JWT jis se hum refresh token and access token bana rhe h 
+access token ka duration km  hota h refresh token se and refresh token me info bhi km di jati h */
 
 UserSchema.methods.generateAccessToken = function () {
    return jwt.sign(
@@ -77,6 +83,7 @@ UserSchema.methods.generateAccessToken = function () {
         }
     )
 }
+
 UserSchema.methods.generateRefreshToken = function () {
    return jwt.sign(
         {
