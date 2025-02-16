@@ -3,7 +3,6 @@ import ApiError from '../utils/apiError.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import Upload from '../utils/cloudnary.js';
 import ApiResponse from '../utils/apiResponse.js';
-import bcrypt from 'bcrypt';
 
 const userController = asyncHandler(async (req, res) => {
     // Take input from the user from frontend
@@ -15,13 +14,13 @@ const userController = asyncHandler(async (req, res) => {
     }
 
     // Check if user already exists or not
-    const existedUser = await User.findOne({
-        $or: [{ email }, { username }]
-    });
+    // const existedUser = await User.findOne({
+    //     $or: [{ email }, { username }]
+    // });
 
-    if (existedUser) {
-        throw new ApiError(300, "User Already Exist");
-    }
+    // if (existedUser) {
+    //     throw new ApiError(300, "User Already Exist");
+    // }
 
     // Check for the files
     const avatarLocalPath = req.files?.avatar[0]?.path;

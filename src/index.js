@@ -14,7 +14,7 @@ dotenv.config({
 
 Connection().then(()=>{
     app.listen(process.env.PORT || 8000 , ()=> {
-        console.log(`Server is running on Port ${process.env.PORT || 8000}`)
+        console.log(`Server is running on http://localhost:${process.env.PORT || 8000}`)
     })
 }).catch((error)=> {
     console.log("Error in Connection is " , error)
