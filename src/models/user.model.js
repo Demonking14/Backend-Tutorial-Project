@@ -45,7 +45,7 @@ const UserSchema = new Schema({
         required: true,
 
     },
-    refereceToken: {
+    refreshToken: {
         type: String
     }
 }, { timestamps: true });
