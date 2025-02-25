@@ -15,7 +15,9 @@ const UserSchema = new Schema({
         type: String,
         required: true,
         lowercase: true,
-        trim: true
+        trim: true,
+        unique:true,
+        index:true
 
     },
     fullName: {
@@ -32,7 +34,7 @@ const UserSchema = new Schema({
     },
     coverImage: {
         type: String,
-        required: true,
+    
     },
     watchHistory: [
         {

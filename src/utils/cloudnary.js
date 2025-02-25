@@ -8,21 +8,22 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET // Click 'View API Keys' above to copy your API secret
 });
 
-const Upload = async (filepath) => {
+const cloudinaryUpload = async (filepath) => {
     if (!filepath) return null;
-   try {
-    const result = await cloudinary.uploader.upload(filepath, {
-        resource_type : "auto"
-    })
-    
-    console.log("File Uploaded Successfully") ;
-    return result
-    
-   } catch (error) {
-    fs.unlinkSync(filepath);
-         console.log("Error in Upload Function is " , error)
-    
-   }
+    try {
+        const result = await cloudinary.uploader.upload(filepath, {
+            resource_type: "auto"
+        });
+        console.log("File Uploaded Successfully", result);
+        fs.unlinkSync(filepath)
+        return result;
+    } catch (error) {
+        console.error("Error in Upload Function:", error);
+       
+            fs.unlinkSync(filepath);
+        
+        throw new Error("File upload failed");
+    }
 };
 
-export default Upload;
+export default cloudinaryUpload;

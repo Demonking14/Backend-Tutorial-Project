@@ -5,7 +5,7 @@ We are using async function because database takes time to load and we have to w
 const Connection = async()=> {
 /*Always use try and catch so that if any error occur we can handle it or see it in our terminal for debugging */
     try{
-        const ConnectionInstance = await mongoose.connect(`${process.env.MONGODB_URL}/${DB_NAME}`).then(()=> {
+        const ConnectionInstance = await mongoose.connect(`${process.env.MONGODB_URI}/${DB_NAME}`).then(()=> {
             console.log(`\nMongoDB Connection Successfully on Name : ${ConnectionInstance.connection.host}` )
         })    }
     catch{
