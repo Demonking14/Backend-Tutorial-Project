@@ -3,7 +3,7 @@ import ApiError from '../utils/apiError.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import cloudinaryUpload from "../utils/cloudnary.js";
 import ApiResponse from '../utils/apiResponse.js';
-import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 const generatingAccessAndRefreshToken = async (userId) => {
     const user = await User.findById(userId);
@@ -57,13 +57,13 @@ const userController = asyncHandler(async (req, res) => {
     console.log("\nInformation about coverImage after uploading into cloudinary\n", coverImage);
 
     // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create a user in database
     const user = await User.create({
         username: username.toLowerCase(),
         fullName,
-        password: hashedPassword,
+        password,
         email,
         avatar: avatar.url,
         coverImage: coverImage?.url || ""
@@ -86,8 +86,9 @@ const userController = asyncHandler(async (req, res) => {
 
 const LoginUser = asyncHandler(async (req, res) => {
     const { email, username, password } = req.body;
+    console.log(password)
 
-    if (!email || !username) {
+    if (!(email || username)) {
         throw new ApiError(400, "Email or Username is required");
     }
 
@@ -145,4 +146,25 @@ const LogoutUser = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, {}, "User has been logged out successfully"));
 });
 
-export { userController, LoginUser, LogoutUser };
+const newRefreshAndAccessToken = asyncHandler(async(req, res)=> {
+   const incomingRefreshToken =  req.cookies.refreshToken || req.body.refreshToken
+
+   if(!incomingRefreshToken){
+    throw new ApiError(404 , "Invalid refresh Token")
+   }
+
+   const decodedToken =  jwt.verify(incomingRefreshToken , process.env.REFRESH_TOKEN_SECRET)
+
+   const user = await User.findById(decodedToken._id)
+   if(!user){
+    throw new ApiError(403, "User trying to enter with invalid Token")
+   }
+
+   const {accessToken , newrefreshToken} = await generatingAccessAndRefreshToken(user._id)
+
+   return res.status(200).cookie("accessToken", accessToken).cookie("refreshToken", newrefreshToken).json(new ApiResponse(200, {accessToken, newrefreshToken} , "New Access Token and Refresh Token has been generated successfully"))
+
+
+
+})
+export { userController, LoginUser, LogoutUser , newRefreshAndAccessToken };
