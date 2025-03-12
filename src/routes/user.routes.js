@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { multerUpload } from "../middlewares/multer.middleware.js";
 import { verifyUser } from '../middlewares/auth.middleware.js';
-import { userController, LoginUser, LogoutUser , newRefreshAndAccessToken } from "../controllers/user.controller.js";
+import { userController, LoginUser, LogoutUser , newRefreshAndAccessToken, UpdatePassword, UpdateUserInformation, UpdateAvatar, UpdateCoverImage, ChannelInformations, getWatchHistory } from "../controllers/user.controller.js";
 
 const router = Router();
 
@@ -26,5 +26,17 @@ router.route("/logout").post(
     LogoutUser
 );
 router.route("/refresh-token").post(newRefreshAndAccessToken)
+
+router.route("/password_update").post(verifyUser , UpdatePassword)
+
+router.route("/user_info").patch(verifyUser , UpdateUserInformation)
+
+router.route("/avatar").patch(verifyUser , multerUpload , UpdateAvatar)
+
+router.route("/coverImage").patch(verifyUser , multerUpload , UpdateCoverImage)
+
+router.route("/c/:username").get(verifyUser , ChannelInformations)
+
+router.route("/WatchHistory").get(verifyUser , getWatchHistory)
 
 export default router;
