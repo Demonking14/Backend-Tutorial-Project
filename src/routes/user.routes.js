@@ -27,13 +27,13 @@ router.route("/logout").post(
 );
 router.route("/refresh-token").post(newRefreshAndAccessToken)
 
-router.route("/password_update").post(verifyUser , UpdatePassword)
+router.route("/password_update").patch(verifyUser , UpdatePassword)
 
 router.route("/user_info").patch(verifyUser , UpdateUserInformation)
 
-router.route("/avatar").patch(verifyUser , multerUpload , UpdateAvatar)
+router.route("/avatar").patch(verifyUser , multerUpload.single("avatar"), UpdateAvatar)
 
-router.route("/coverImage").patch(verifyUser , multerUpload , UpdateCoverImage)
+router.route("/coverimage").patch(verifyUser , multerUpload.single("coverImage") , UpdateCoverImage)
 
 router.route("/c/:username").get(verifyUser , ChannelInformations)
 

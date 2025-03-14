@@ -184,13 +184,13 @@ const UpdatePassword = asyncHandler(async (req, res) => {
     }
 
     if (user.isPasswordCorrect(oldPassword)) {
-        throw new ApiError(400, "Old Password is not correct")
+        user.password = newPassword
+
+    await user.save({ validateBeforeSave: false })
 
     }
 
-    user.password = newPassword
-
-    await user.save({ validateBeforeSave: false })
+    
 
     return res.status(200).json(
         new ApiResponse(200, {}, "Password has been updated successfully")
@@ -222,7 +222,7 @@ const UpdateUserInformation = asyncHandler(async (req, res) => {
 
 
 const UpdateAvatar = asyncHandler(async (req, res) => {
-    const avatarLocalPath = req.file;
+    const avatarLocalPath = req.file?.path;
 
     if (!avatarLocalPath) {
         throw new ApiError(400, "Avatar is required for updating the avatar");
@@ -240,7 +240,7 @@ const UpdateAvatar = asyncHandler(async (req, res) => {
 });
 
 const UpdateCoverImage = asyncHandler(async (req, res) => {
-    const coverImagePath = req.file;
+    const coverImagePath = req.file?.path;
 
     if (!coverImagePath) {
         throw new ApiError(400, "Cover Image is required for updating the Cover Image");
