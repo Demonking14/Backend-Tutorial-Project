@@ -227,12 +227,16 @@ const UpdateAvatar = asyncHandler(async (req, res) => {
     if (!avatarLocalPath) {
         throw new ApiError(400, "Avatar is required for updating the avatar");
     }
-
-    const avatar = await cloudinaryUpload(avatarLocalPath);
-
-    await User.findByIdAndUpdate(req.user._id, {
-        avatar: avatar.url
-    }, { new: true }).select("-password -refreshToken");
+    const user = await User.findByIdAndUpdate(req.user._id) 
+        if(user.avatar?.public_id){
+            await cloudinaryUpload.uploader.destroy(user.avatar.public_id)
+        }
+     const avatar = await cloudinaryUpload(avatarLocalPath);
+     user.avatar= {
+        avatar: avatar.url,
+        public_id:avatar.public_id
+    };
+    await user.save({validateBeforeSave:false})
 
     return res.status(200).json(
         new ApiResponse(200, {}, "Avatar has been updated successfully")

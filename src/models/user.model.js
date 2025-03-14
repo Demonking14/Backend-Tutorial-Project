@@ -28,10 +28,12 @@ const UserSchema = new Schema({
     },
     avatar: {
         type: String,
-        required: true
+        required: true,
+        public_id:String,
     },
     coverImage: {
-        type: String
+        type: String,
+        public_id:String,
     },
     watchHistory: [
         {
